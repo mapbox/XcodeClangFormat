@@ -1,0 +1,175 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="11198.2" systemVersion="15G1004" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES" customObjectInstantitationMethod="direct">
+    <dependencies>
+        <deployment identifier="macosx"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="11198.2"/>
+    </dependencies>
+    <objects>
+        <customObject id="-2" userLabel="File's Owner" customClass="NSApplication">
+            <connections>
+                <outlet property="delegate" destination="Voe-Tx-rLC" id="GzC-gU-4Uq"/>
+            </connections>
+        </customObject>
+        <customObject id="-1" userLabel="First Responder" customClass="FirstResponder"/>
+        <customObject id="-3" userLabel="Application" customClass="NSObject"/>
+        <customObject id="Voe-Tx-rLC" customClass="AppDelegate">
+            <connections>
+                <outlet property="chromiumStyle" destination="Auc-hy-eYr" id="sCB-nJ-ASy"/>
+                <outlet property="customStyle" destination="6tj-CD-igp" id="MrH-fs-H3P"/>
+                <outlet property="googleStyle" destination="vAd-sN-m9U" id="zuf-0o-8nm"/>
+                <outlet property="llvmStyle" destination="kPz-cC-pSU" id="SeV-IW-0Tg"/>
+                <outlet property="mozillaStyle" destination="dVD-9n-Uzt" id="VBh-qF-sAb"/>
+                <outlet property="primaryPathControl" destination="3Cu-aJ-VvE" id="mzX-et-0ai"/>
+                <outlet property="secondaryPathControl" destination="pqu-HA-5vF" id="kO1-Je-kXX"/>
+                <outlet property="webkitStyle" destination="xRP-EL-MWA" id="cI1-Q4-1w1"/>
+                <outlet property="window" destination="Tfy-oo-B9U" id="4pw-Wj-4J2"/>
+            </connections>
+        </customObject>
+        <menu title="Main Menu" systemMenu="main" id="AYu-sK-qS6">
+            <items>
+                <menuItem title="XcodeClangFormat" id="1Xt-HY-uBw">
+                    <modifierMask key="keyEquivalentModifierMask"/>
+                    <menu key="submenu" title="XcodeClangFormat" systemMenu="apple" id="uQy-DD-JDr">
+                        <items>
+                            <menuItem title="About XcodeClangFormat" id="5kV-Vb-QxS">
+                                <modifierMask key="keyEquivalentModifierMask"/>
+                                <connections>
+                                    <action selector="orderFrontStandardAboutPanel:" target="-1" id="Exp-CZ-Vem"/>
+                                </connections>
+                            </menuItem>
+                            <menuItem isSeparatorItem="YES" id="VOq-y0-SEH"/>
+                            <menuItem title="Services" id="NMo-om-nkz">
+                                <modifierMask key="keyEquivalentModifierMask"/>
+                                <menu key="submenu" title="Services" systemMenu="services" id="hz9-B4-Xy5"/>
+                            </menuItem>
+                            <menuItem isSeparatorItem="YES" id="4je-JR-u6R"/>
+                            <menuItem title="Hide XcodeClangFormat" keyEquivalent="h" id="Olw-nP-bQN">
+                                <connections>
+                                    <action selector="hide:" target="-1" id="PnN-Uc-m68"/>
+                                </connections>
+                            </menuItem>
+                            <menuItem title="Hide Others" keyEquivalent="h" id="Vdr-fp-XzO">
+                                <modifierMask key="keyEquivalentModifierMask" option="YES" command="YES"/>
+                                <connections>
+                                    <action selector="hideOtherApplications:" target="-1" id="VT4-aY-XCT"/>
+                                </connections>
+                            </menuItem>
+                            <menuItem title="Show All" id="Kd2-mp-pUS">
+                                <modifierMask key="keyEquivalentModifierMask"/>
+                                <connections>
+                                    <action selector="unhideAllApplications:" target="-1" id="Dhg-Le-xox"/>
+                                </connections>
+                            </menuItem>
+                            <menuItem isSeparatorItem="YES" id="kCx-OE-vgT"/>
+                            <menuItem title="Quit XcodeClangFormat" keyEquivalent="q" id="4sb-4s-VLi">
+                                <connections>
+                                    <action selector="terminate:" target="-1" id="Te7-pn-YzF"/>
+                                </connections>
+                            </menuItem>
+                        </items>
+                    </menu>
+                </menuItem>
+            </items>
+            <point key="canvasLocation" x="-415" y="-127"/>
+        </menu>
+        <window title="Clang Format Configuration" allowsToolTipsWhenApplicationIsInactive="NO" autorecalculatesKeyViewLoop="NO" restorable="NO" oneShot="NO" releasedWhenClosed="NO" showsToolbarButton="NO" frameAutosaveName="" animationBehavior="default" id="Tfy-oo-B9U">
+            <windowStyleMask key="styleMask" titled="YES" miniaturizable="YES"/>
+            <windowPositionMask key="initialPositionMask" leftStrut="YES" rightStrut="YES" topStrut="YES" bottomStrut="YES"/>
+            <rect key="contentRect" x="196" y="240" width="708" height="201"/>
+            <rect key="screenRect" x="0.0" y="0.0" width="1920" height="1177"/>
+            <view key="contentView" id="hbe-7O-Bve">
+                <rect key="frame" x="0.0" y="0.0" width="708" height="201"/>
+                <autoresizingMask key="autoresizingMask"/>
+                <subviews>
+                    <button fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="kPz-cC-pSU">
+                        <rect key="frame" x="18" y="163" width="66" height="20"/>
+                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                        <buttonCell key="cell" type="radio" title="LLVM" bezelStyle="regularSquare" imagePosition="left" alignment="left" controlSize="small" state="on" inset="2" id="0pf-qU-f17">
+                            <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
+                            <font key="font" metaFont="cellTitle"/>
+                        </buttonCell>
+                        <connections>
+                            <action selector="chooseStyle:" target="Voe-Tx-rLC" id="C2x-KM-XEY"/>
+                        </connections>
+                    </button>
+                    <button fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="vAd-sN-m9U">
+                        <rect key="frame" x="18" y="139" width="66" height="20"/>
+                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                        <buttonCell key="cell" type="radio" title="Google" bezelStyle="regularSquare" imagePosition="left" alignment="left" controlSize="small" inset="2" id="tL2-b2-qyk">
+                            <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
+                            <font key="font" metaFont="cellTitle"/>
+                        </buttonCell>
+                        <connections>
+                            <action selector="chooseStyle:" target="Voe-Tx-rLC" id="guk-NR-vrO"/>
+                        </connections>
+                    </button>
+                    <button fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="Auc-hy-eYr">
+                        <rect key="frame" x="18" y="115" width="85" height="20"/>
+                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                        <buttonCell key="cell" type="radio" title="Chromium" bezelStyle="regularSquare" imagePosition="left" alignment="left" controlSize="small" inset="2" id="Flj-JM-GeP">
+                            <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
+                            <font key="font" metaFont="cellTitle"/>
+                        </buttonCell>
+                        <connections>
+                            <action selector="chooseStyle:" target="Voe-Tx-rLC" id="R1B-3z-Nsd"/>
+                        </connections>
+                    </button>
+                    <button fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="dVD-9n-Uzt">
+                        <rect key="frame" x="18" y="91" width="85" height="20"/>
+                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                        <buttonCell key="cell" type="radio" title="Mozilla" bezelStyle="regularSquare" imagePosition="left" alignment="left" controlSize="small" inset="2" id="HUW-GY-R1V">
+                            <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
+                            <font key="font" metaFont="cellTitle"/>
+                        </buttonCell>
+                        <connections>
+                            <action selector="chooseStyle:" target="Voe-Tx-rLC" id="cHE-we-Lka"/>
+                        </connections>
+                    </button>
+                    <button fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="xRP-EL-MWA">
+                        <rect key="frame" x="18" y="67" width="85" height="20"/>
+                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                        <buttonCell key="cell" type="radio" title="Webkit" bezelStyle="regularSquare" imagePosition="left" alignment="left" controlSize="small" inset="2" id="0hD-Ru-lkH">
+                            <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
+                            <font key="font" metaFont="cellTitle"/>
+                        </buttonCell>
+                        <connections>
+                            <action selector="chooseStyle:" target="Voe-Tx-rLC" id="3yp-x3-rWB"/>
+                        </connections>
+                    </button>
+                    <button fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="6tj-CD-igp">
+                        <rect key="frame" x="18" y="43" width="181" height="20"/>
+                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                        <buttonCell key="cell" type="radio" title="Custom .clang-format file:" bezelStyle="regularSquare" imagePosition="left" alignment="left" controlSize="small" inset="2" id="P5R-Ji-fL5">
+                            <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
+                            <font key="font" metaFont="cellTitle"/>
+                        </buttonCell>
+                        <connections>
+                            <action selector="chooseStyle:" target="Voe-Tx-rLC" id="HIm-T8-mcl"/>
+                        </connections>
+                    </button>
+                    <pathControl focusRingType="none" verticalHuggingPriority="750" fixedFrame="YES" allowsExpansionToolTips="YES" translatesAutoresizingMaskIntoConstraints="NO" id="pqu-HA-5vF">
+                        <rect key="frame" x="191" y="20" width="497" height="20"/>
+                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                        <pathCell key="cell" controlSize="small" selectable="YES" enabled="NO" focusRingType="none" alignment="left" placeholderString="" id="gpt-Iy-KM3">
+                            <font key="font" metaFont="smallSystem"/>
+                            <url key="url" string="file:///"/>
+                        </pathCell>
+                    </pathControl>
+                    <pathControl verticalHuggingPriority="750" fixedFrame="YES" allowsExpansionToolTips="YES" translatesAutoresizingMaskIntoConstraints="NO" id="3Cu-aJ-VvE">
+                        <rect key="frame" x="188" y="42" width="207" height="22"/>
+                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                        <pathCell key="cell" controlSize="small" selectable="YES" editable="YES" alignment="left" pathStyle="popUp" id="Q0B-5S-9TO">
+                            <font key="font" metaFont="cellTitle"/>
+                            <url key="url" string="file:///"/>
+                        </pathCell>
+                        <connections>
+                            <action selector="selectFile:" target="Voe-Tx-rLC" id="4DR-07-1vQ"/>
+                            <outlet property="delegate" destination="Voe-Tx-rLC" id="jxf-uT-Ug6"/>
+                        </connections>
+                    </pathControl>
+                </subviews>
+            </view>
+            <point key="canvasLocation" x="-174" y="45.5"/>
+        </window>
+    </objects>
+</document>
