@@ -21,7 +21,7 @@ NSErrorDomain errorDomain = @"ClangFormatError";
 
 NSUserDefaults* defaults = nil;
 
-- (NSData *)getCustomStyle {
+- (NSData*)getCustomStyle {
     // First, read the regular bookmark because it could've been changed by the wrapper app.
     NSData* regularBookmark = [defaults dataForKey:@"regularBookmark"];
     NSURL* regularURL = nil;
@@ -44,24 +44,28 @@ NSUserDefaults* defaults = nil;
     BOOL securityStale = NO;
     if (securityBookmark) {
         securityURL = [NSURL URLByResolvingBookmarkData:securityBookmark
-                                               options:NSURLBookmarkResolutionWithSecurityScope | NSURLBookmarkResolutionWithoutUI
-                                         relativeToURL:nil
-                                   bookmarkDataIsStale:&securityStale
-                                                 error:nil];
+                                                options:NSURLBookmarkResolutionWithSecurityScope |
+                                                        NSURLBookmarkResolutionWithoutUI
+                                          relativeToURL:nil
+                                    bookmarkDataIsStale:&securityStale
+                                                  error:nil];
     }
 
     // Clear out the security URL if it's no longer matching the regular URL.
-    if (securityStale == YES || (securityURL && ![[securityURL path] isEqualToString:[regularURL path]])) {
+    if (securityStale == YES ||
+        (securityURL && ![[securityURL path] isEqualToString:[regularURL path]])) {
         securityURL = nil;
     }
 
     if (!securityURL && regularStale == NO) {
         // Attempt to create new security URL from the regular URL to persist across system reboots.
-        NSError *error = nil;
-        securityBookmark = [regularURL bookmarkDataWithOptions:NSURLBookmarkCreationWithSecurityScope | NSURLBookmarkCreationSecurityScopeAllowOnlyReadAccess
-                                includingResourceValuesForKeys:nil
-                                                 relativeToURL:nil
-                                                         error:&error];
+        NSError* error = nil;
+        securityBookmark = [regularURL
+                   bookmarkDataWithOptions:NSURLBookmarkCreationWithSecurityScope |
+                                           NSURLBookmarkCreationSecurityScopeAllowOnlyReadAccess
+            includingResourceValuesForKeys:nil
+                             relativeToURL:nil
+                                     error:&error];
         [defaults setObject:securityBookmark forKey:@"securityBookmark"];
         securityURL = regularURL;
     }
@@ -70,7 +74,7 @@ NSUserDefaults* defaults = nil;
         // Finally, attempt to read the .clang-format file
         NSError* error = nil;
         [securityURL startAccessingSecurityScopedResource];
-        NSData * data = [NSData dataWithContentsOfURL:securityURL options:0 error:&error];
+        NSData* data = [NSData dataWithContentsOfURL:securityURL options:0 error:&error];
         [securityURL stopAccessingSecurityScopedResource];
         if (error) {
             NSLog(@"Error loading from security bookmark: %@", error);
@@ -82,10 +86,10 @@ NSUserDefaults* defaults = nil;
     return nil;
 }
 
-- (void)performCommandWithInvocation:(XCSourceEditorCommandInvocation *)invocation completionHandler:(void (^)(NSError * _Nullable nilOrError))completionHandler
-{
+- (void)performCommandWithInvocation:(XCSourceEditorCommandInvocation*)invocation
+                   completionHandler:(void (^)(NSError* _Nullable nilOrError))completionHandler {
     if (!defaults) {
-        defaults = [[NSUserDefaults alloc] initWithSuiteName: @"XcodeClangFormat"];
+        defaults = [[NSUserDefaults alloc] initWithSuiteName:@"XcodeClangFormat"];
     }
 
     NSString* style = [defaults stringForKey:@"style"];
@@ -99,26 +103,42 @@ NSUserDefaults* defaults = nil;
     if ([style isEqualToString:@"custom"]) {
         NSData* config = [self getCustomStyle];
         if (!config) {
-            completionHandler([NSError errorWithDomain:errorDomain
-                                                  code:0
-                                              userInfo:@{NSLocalizedDescriptionKey: @"Could not load custom style. Please open XcodeClangFormat.app"}]);
+            completionHandler([NSError
+                errorWithDomain:errorDomain
+                           code:0
+                       userInfo:@{
+                           NSLocalizedDescriptionKey :
+                               @"Could not load custom style. Please open XcodeClangFormat.app"
+                       }]);
         } else {
             // parse style
-            llvm::StringRef configString(reinterpret_cast<const char*>(config.bytes), config.length);
+            llvm::StringRef configString(reinterpret_cast<const char*>(config.bytes),
+                                         config.length);
             auto error = clang::format::parseConfiguration(configString, &format);
             if (error) {
-                completionHandler([NSError errorWithDomain:errorDomain
-                                                      code:0
-                                                  userInfo:@{NSLocalizedDescriptionKey: [NSString stringWithFormat:@"Could not parse custom style: %s.", error.message().c_str()]}]);
+                completionHandler([NSError
+                    errorWithDomain:errorDomain
+                               code:0
+                           userInfo:@{
+                               NSLocalizedDescriptionKey :
+                                   [NSString stringWithFormat:@"Could not parse custom style: %s.",
+                                                              error.message().c_str()]
+                           }]);
                 return;
             }
         }
     } else {
-        auto success = clang::format::getPredefinedStyle(llvm::StringRef([style cStringUsingEncoding:NSUTF8StringEncoding]), clang::format::FormatStyle::LanguageKind::LK_Cpp, &format);
+        auto success = clang::format::getPredefinedStyle(
+            llvm::StringRef([style cStringUsingEncoding:NSUTF8StringEncoding]),
+            clang::format::FormatStyle::LanguageKind::LK_Cpp, &format);
         if (!success) {
-            completionHandler([NSError errorWithDomain:errorDomain
-                                                  code:0
-                                              userInfo:@{NSLocalizedDescriptionKey: [NSString stringWithFormat:@"Could not parse default style %@", style]}]);
+            completionHandler([NSError
+                errorWithDomain:errorDomain
+                           code:0
+                       userInfo:@{
+                           NSLocalizedDescriptionKey : [NSString
+                               stringWithFormat:@"Could not parse default style %@", style]
+                       }]);
             return;
         }
     }
@@ -143,7 +163,12 @@ NSUserDefaults* defaults = nil;
 
     if (!result) {
         // We could not apply the calculated replacements.
-        completionHandler([NSError errorWithDomain:errorDomain code:0 userInfo:@{NSLocalizedDescriptionKey: @"Failed to apply formatting replacements."}]);
+        completionHandler([NSError
+            errorWithDomain:errorDomain
+                       code:0
+                   userInfo:@{
+                       NSLocalizedDescriptionKey : @"Failed to apply formatting replacements."
+                   }]);
         return;
     }
 
@@ -153,7 +178,9 @@ NSUserDefaults* defaults = nil;
     [invocation.buffer.selections removeAllObjects];
 
     // Update the entire text with the result we got after applying the replacements.
-    invocation.buffer.completeBuffer = [[NSString alloc] initWithBytes:result->data() length:result->size() encoding:NSUTF8StringEncoding];
+    invocation.buffer.completeBuffer = [[NSString alloc] initWithBytes:result->data()
+                                                                length:result->size()
+                                                              encoding:NSUTF8StringEncoding];
 
     // Recalculate the line offsets.
     updateOffsets(offsets, invocation.buffer.lines);
@@ -161,7 +188,8 @@ NSUserDefaults* defaults = nil;
     // Update the selections with the shifted code positions.
     for (auto& range : ranges) {
         const size_t start = clang::tooling::shiftedCodePosition(replaces, range.getOffset());
-        const size_t end = clang::tooling::shiftedCodePosition(replaces, range.getOffset() + range.getLength());
+        const size_t end =
+            clang::tooling::shiftedCodePosition(replaces, range.getOffset() + range.getLength());
 
         // In offsets, find the value that is smaller than start.
         auto start_it = std::lower_bound(offsets.begin(), offsets.end(), start);
@@ -171,8 +199,12 @@ NSUserDefaults* defaults = nil;
         }
 
         // We need to go one line back unless we're at the beginning of the line.
-        if (*start_it > start) { --start_it; }
-        if (*end_it > end) { --end_it; }
+        if (*start_it > start) {
+            --start_it;
+        }
+        if (*end_it > end) {
+            --end_it;
+        }
 
         const size_t start_line = std::distance(offsets.begin(), start_it);
         const int64_t start_column = int64_t(start) - int64_t(*start_it);
@@ -180,12 +212,17 @@ NSUserDefaults* defaults = nil;
         const size_t end_line = std::distance(offsets.begin(), end_it);
         const int64_t end_column = int64_t(end) - int64_t(*end_it);
 
-        [invocation.buffer.selections addObject:[[XCSourceTextRange alloc] initWithStart: XCSourceTextPositionMake(start_line, start_column) end:XCSourceTextPositionMake(end_line, end_column)]];
+        [invocation.buffer.selections
+            addObject:[[XCSourceTextRange alloc]
+                          initWithStart:XCSourceTextPositionMake(start_line, start_column)
+                                    end:XCSourceTextPositionMake(end_line, end_column)]];
     }
 
     // If we could not recover the selection, place the cursor at the beginning of the file.
     if (!invocation.buffer.selections.count) {
-        [invocation.buffer.selections addObject:[[XCSourceTextRange alloc] initWithStart:XCSourceTextPositionMake(0,0) end:XCSourceTextPositionMake(0,0)]];
+        [invocation.buffer.selections
+            addObject:[[XCSourceTextRange alloc] initWithStart:XCSourceTextPositionMake(0, 0)
+                                                           end:XCSourceTextPositionMake(0, 0)]];
     }
 
     completionHandler(nil);
