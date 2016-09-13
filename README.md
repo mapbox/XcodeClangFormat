@@ -13,3 +13,7 @@ Then, use the <kbd>Format Source Code</kbd> command in Xcode's <kbd>Editor</kbd>
 ![](screenshot-format.png)
 
 Due to macOS Sandboxing restrictions, this Plugin behaves slightly differently compared to the command line `clang-format` command: It always uses the style selected in the configuration app, and will not use the nearest `.clang-format` file on disk.
+
+### Building
+
+To build XcodeClangFormat, run `./configure` on the command line, then build the XcodeClangFormat scheme in the included Xcode project.
