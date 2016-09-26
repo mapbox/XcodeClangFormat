@@ -22,6 +22,10 @@ Download the precompiled app or [build it yourself](#building), then open the ap
 * On OS X 10.11, you'll need to run `sudo /usr/libexec/xpccachectl`, then **reboot** to enable app extensions.
 * On macOS Sierra, extensions should be loaded by default.
 
+Then, go to *System Preferences* → *Extensions*, and make sure that **clang-format** in the *Xcode Source Editor* section is checked:
+
+![](screenshot-extensions.png)
+
 
 ### Keyboard shortcut
 
