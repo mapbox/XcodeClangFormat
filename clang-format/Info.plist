@@ -34,7 +34,7 @@
 					<key>XCSourceEditorCommandIdentifier</key>
 					<string>$(PRODUCT_BUNDLE_IDENTIFIER).ClangFormatCommand</string>
 					<key>XCSourceEditorCommandName</key>
-					<string>Format Source Code</string>
+					<string>Format Selected Source Code</string>
 				</dict>
 			</array>
 			<key>XCSourceEditorExtensionPrincipalClass</key>
