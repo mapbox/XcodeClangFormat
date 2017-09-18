@@ -4,8 +4,8 @@ set -e
 set -o pipefail
 set -u
 
-LLVM_VERSION=3.9.0
-LLVM_HASH=e2e15b3e5c5f3713174bfbe5a45cc3e01af8e0c21a34750c2daeabd37f2dc6f2
+LLVM_VERSION=5.0.0
+LLVM_HASH=633f15fe09e6d9f0651add6c4a65e6f68da9809180c196c29573d96ec64a5c1f
 LLVM_CONFIG=${LLVM_CONFIG:-llvm-config}
 
 command -v "${LLVM_CONFIG}" >/dev/null 2>&1 || {
