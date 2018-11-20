@@ -455,6 +455,7 @@
 					"$(LLVM_LIBDIR)/libclangRewrite.a",
 					"$(LLVM_LIBDIR)/libLLVMCore.a",
 					"$(LLVM_LIBDIR)/libLLVMSupport.a",
+					"$(LLVM_LIBDIR)/libclangToolingInclusions.a",
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = "com.mapbox.XcodeClangFormat.clang-format";
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -492,6 +493,7 @@
 					"$(LLVM_LIBDIR)/libclangRewrite.a",
 					"$(LLVM_LIBDIR)/libLLVMCore.a",
 					"$(LLVM_LIBDIR)/libLLVMSupport.a",
+					"$(LLVM_LIBDIR)/libclangToolingInclusions.a",
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = "com.mapbox.XcodeClangFormat.clang-format";
 				PRODUCT_NAME = "$(TARGET_NAME)";
