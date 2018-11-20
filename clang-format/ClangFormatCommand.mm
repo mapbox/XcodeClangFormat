@@ -114,7 +114,7 @@ NSUserDefaults* defaults = nil;
             // parse style
             llvm::StringRef configString(reinterpret_cast<const char*>(config.bytes),
                                          config.length);
-            auto error = clang::format::parseConfiguration(configString, &format);
+            std::error_code error = clang::format::parseConfiguration(configString, &format);
             if (error) {
                 completionHandler([NSError
                     errorWithDomain:errorDomain
@@ -128,7 +128,7 @@ NSUserDefaults* defaults = nil;
             }
         }
     } else {
-        auto success = clang::format::getPredefinedStyle(llvm::StringRef([style cStringUsingEncoding:NSUTF8StringEncoding]),
+        bool success = clang::format::getPredefinedStyle(llvm::StringRef([style cStringUsingEncoding:NSUTF8StringEncoding]),
                                                          clang::format::FormatStyle::LanguageKind::LK_ObjC,
                                                          &format);
         if (!success) {
@@ -141,6 +141,9 @@ NSUserDefaults* defaults = nil;
                        }]);
             return;
         }
+
+        // unlimit
+        format.ColumnLimit = 0;
     }
 
     NSData* buffer = [invocation.buffer.completeBuffer dataUsingEncoding:NSUTF8StringEncoding];
