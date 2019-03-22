@@ -1,6 +1,6 @@
 # XcodeClangFormat
 
-### [⚙ Download Latest Release](https://github.com/mapbox/XcodeClangFormat/releases/latest)
+### [⚙ Download Latest Release](https://github.com/cntrump/XcodeClangFormat/releases/latest)
 
 This plugin written for Xcode 8's new plugin infrastructure uses Clang's `libclangFormat` library to format code according to a `.clang-format` file.
 
@@ -29,7 +29,7 @@ Then, go to *System Preferences* → *Extensions*, and make sure that **clang-fo
 
 ## Keyboard shortcut
 
-To define a keyboard shortcut, open *System Preferences*, click on *Keyboard*, and switch to the *Shortcuts* tab. In the list on the left, select *App Shortcuts*, then hit the <kbd>+</kbd> button. Select Xcode, enter `Format Source Code`, and define a shortcut of your liking.
+To define a keyboard shortcut, open *System Preferences*, click on *Keyboard*, and switch to the *Shortcuts* tab. In the list on the left, select *App Shortcuts*, then hit the <kbd>+</kbd> button. Select Xcode, enter `Format Selection`, and define a shortcut of your liking.
 
 ![](screenshot-shortcut.png)
 
