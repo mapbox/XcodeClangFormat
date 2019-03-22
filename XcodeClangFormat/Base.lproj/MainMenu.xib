@@ -1,8 +1,9 @@
-<?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="11198.2" systemVersion="15G1004" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES" customObjectInstantitationMethod="direct">
+<?xml version="1.0" encoding="UTF-8"?>
+<document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="14460.31" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES" customObjectInstantitationMethod="direct">
     <dependencies>
         <deployment identifier="macosx"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="11198.2"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="14460.31"/>
+        <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <objects>
         <customObject id="-2" userLabel="File's Owner" customClass="NSApplication">
@@ -21,6 +22,7 @@
                 <outlet property="mozillaStyle" destination="dVD-9n-Uzt" id="VBh-qF-sAb"/>
                 <outlet property="primaryPathControl" destination="3Cu-aJ-VvE" id="mzX-et-0ai"/>
                 <outlet property="secondaryPathControl" destination="pqu-HA-5vF" id="kO1-Je-kXX"/>
+                <outlet property="sortInclude" destination="CTj-3l-Xl9" id="e4z-Wh-pYn"/>
                 <outlet property="webkitStyle" destination="xRP-EL-MWA" id="cI1-Q4-1w1"/>
                 <outlet property="window" destination="Tfy-oo-B9U" id="4pw-Wj-4J2"/>
             </connections>
@@ -72,17 +74,17 @@
             </items>
             <point key="canvasLocation" x="-415" y="-127"/>
         </menu>
-        <window title="Clang Format Configuration" allowsToolTipsWhenApplicationIsInactive="NO" autorecalculatesKeyViewLoop="NO" restorable="NO" oneShot="NO" releasedWhenClosed="NO" showsToolbarButton="NO" frameAutosaveName="" animationBehavior="default" id="Tfy-oo-B9U">
+        <window title="Clang Format Configuration" allowsToolTipsWhenApplicationIsInactive="NO" autorecalculatesKeyViewLoop="NO" restorable="NO" releasedWhenClosed="NO" frameAutosaveName="" animationBehavior="default" id="Tfy-oo-B9U">
             <windowStyleMask key="styleMask" titled="YES" miniaturizable="YES"/>
             <windowPositionMask key="initialPositionMask" leftStrut="YES" rightStrut="YES" topStrut="YES" bottomStrut="YES"/>
-            <rect key="contentRect" x="196" y="240" width="708" height="201"/>
-            <rect key="screenRect" x="0.0" y="0.0" width="1920" height="1177"/>
+            <rect key="contentRect" x="196" y="240" width="412" height="218"/>
+            <rect key="screenRect" x="0.0" y="0.0" width="1920" height="1057"/>
             <view key="contentView" id="hbe-7O-Bve">
-                <rect key="frame" x="0.0" y="0.0" width="708" height="201"/>
+                <rect key="frame" x="0.0" y="0.0" width="412" height="218"/>
                 <autoresizingMask key="autoresizingMask"/>
                 <subviews>
                     <button fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="kPz-cC-pSU">
-                        <rect key="frame" x="18" y="163" width="66" height="20"/>
+                        <rect key="frame" x="18" y="180" width="66" height="20"/>
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                         <buttonCell key="cell" type="radio" title="LLVM" bezelStyle="regularSquare" imagePosition="left" alignment="left" controlSize="small" state="on" inset="2" id="0pf-qU-f17">
                             <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
@@ -93,7 +95,7 @@
                         </connections>
                     </button>
                     <button fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="vAd-sN-m9U">
-                        <rect key="frame" x="18" y="139" width="66" height="20"/>
+                        <rect key="frame" x="18" y="156" width="66" height="20"/>
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                         <buttonCell key="cell" type="radio" title="Google" bezelStyle="regularSquare" imagePosition="left" alignment="left" controlSize="small" inset="2" id="tL2-b2-qyk">
                             <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
@@ -104,7 +106,7 @@
                         </connections>
                     </button>
                     <button fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="Auc-hy-eYr">
-                        <rect key="frame" x="18" y="115" width="85" height="20"/>
+                        <rect key="frame" x="18" y="132" width="85" height="20"/>
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                         <buttonCell key="cell" type="radio" title="Chromium" bezelStyle="regularSquare" imagePosition="left" alignment="left" controlSize="small" inset="2" id="Flj-JM-GeP">
                             <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
@@ -115,7 +117,7 @@
                         </connections>
                     </button>
                     <button fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="dVD-9n-Uzt">
-                        <rect key="frame" x="18" y="91" width="85" height="20"/>
+                        <rect key="frame" x="18" y="108" width="85" height="20"/>
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                         <buttonCell key="cell" type="radio" title="Mozilla" bezelStyle="regularSquare" imagePosition="left" alignment="left" controlSize="small" inset="2" id="HUW-GY-R1V">
                             <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
@@ -126,7 +128,7 @@
                         </connections>
                     </button>
                     <button fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="xRP-EL-MWA">
-                        <rect key="frame" x="18" y="67" width="85" height="20"/>
+                        <rect key="frame" x="18" y="84" width="85" height="20"/>
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                         <buttonCell key="cell" type="radio" title="Webkit" bezelStyle="regularSquare" imagePosition="left" alignment="left" controlSize="small" inset="2" id="0hD-Ru-lkH">
                             <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
@@ -137,7 +139,7 @@
                         </connections>
                     </button>
                     <button fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="6tj-CD-igp">
-                        <rect key="frame" x="18" y="43" width="181" height="20"/>
+                        <rect key="frame" x="18" y="60" width="181" height="20"/>
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                         <buttonCell key="cell" type="radio" title="Custom .clang-format file:" bezelStyle="regularSquare" imagePosition="left" alignment="left" controlSize="small" inset="2" id="P5R-Ji-fL5">
                             <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
@@ -148,7 +150,7 @@
                         </connections>
                     </button>
                     <pathControl focusRingType="none" verticalHuggingPriority="750" fixedFrame="YES" allowsExpansionToolTips="YES" translatesAutoresizingMaskIntoConstraints="NO" id="pqu-HA-5vF">
-                        <rect key="frame" x="191" y="20" width="497" height="20"/>
+                        <rect key="frame" x="191" y="37" width="497" height="20"/>
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                         <pathCell key="cell" controlSize="small" selectable="YES" enabled="NO" focusRingType="none" alignment="left" placeholderString="" id="gpt-Iy-KM3">
                             <font key="font" metaFont="smallSystem"/>
@@ -156,7 +158,7 @@
                         </pathCell>
                     </pathControl>
                     <pathControl verticalHuggingPriority="750" fixedFrame="YES" allowsExpansionToolTips="YES" translatesAutoresizingMaskIntoConstraints="NO" id="3Cu-aJ-VvE">
-                        <rect key="frame" x="188" y="42" width="207" height="22"/>
+                        <rect key="frame" x="188" y="59" width="207" height="22"/>
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                         <pathCell key="cell" controlSize="small" selectable="YES" editable="YES" alignment="left" pathStyle="popUp" id="Q0B-5S-9TO">
                             <font key="font" metaFont="cellTitle"/>
@@ -167,9 +169,20 @@
                             <outlet property="delegate" destination="Voe-Tx-rLC" id="jxf-uT-Ug6"/>
                         </connections>
                     </pathControl>
+                    <button verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="CTj-3l-Xl9">
+                        <rect key="frame" x="17" y="17" width="89" height="20"/>
+                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                        <buttonCell key="cell" type="check" title="SortIncludes" bezelStyle="regularSquare" imagePosition="left" controlSize="small" inset="2" id="KKm-e2-Xxo">
+                            <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
+                            <font key="font" metaFont="smallSystem"/>
+                        </buttonCell>
+                        <connections>
+                            <action selector="sortInclude:" target="Voe-Tx-rLC" id="7vm-Ub-1IE"/>
+                        </connections>
+                    </button>
                 </subviews>
             </view>
-            <point key="canvasLocation" x="-174" y="45.5"/>
+            <point key="canvasLocation" x="-322" y="54"/>
         </window>
     </objects>
 </document>

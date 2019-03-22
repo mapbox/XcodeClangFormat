@@ -161,9 +161,31 @@ NSUserDefaults* defaults = nil;
 
     // Calculated replacements and apply them to the input buffer.
     const llvm::StringRef filename("<stdin>");
-    auto replaces = clang::format::reformat(format, code, ranges, filename);
-    auto result = clang::tooling::applyAllReplacements(code, replaces);
-
+    clang::tooling::Replacements replaces;
+    BOOL sortIncludes = [defaults boolForKey:@"sortIncludes"];
+    if (sortIncludes) {
+        replaces = clang::format::sortIncludes(format, code, ranges, filename);
+        auto changedCode = clang::tooling::applyAllReplacements(code, replaces);
+        if (!changedCode) {
+            completionHandler([NSError
+                               errorWithDomain:errorDomain
+                               code:0
+                               userInfo:@{
+                                          NSLocalizedDescriptionKey:
+                                              @"Failed to sort includes."
+                                          }]);
+            return;
+        }
+        
+        ranges = clang::tooling::calculateRangesAfterReplacements(replaces, ranges);
+        auto formatChanges =
+        clang::format::reformat(format, *changedCode, ranges, filename);
+        replaces = replaces.merge(formatChanges);
+    } else {
+        replaces = clang::format::reformat(format, code, ranges, filename);
+    }
+    
+    llvm::Expected<std::string> result = clang::tooling::applyAllReplacements(code, replaces);
     if (!result) {
         // We could not apply the calculated replacements.
         completionHandler([NSError

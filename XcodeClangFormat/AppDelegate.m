@@ -11,6 +11,7 @@
 @property(weak) IBOutlet NSButton* customStyle;
 @property(weak) IBOutlet NSPathControl* primaryPathControl;
 @property(weak) IBOutlet NSPathControl* secondaryPathControl;
+@property(weak) IBOutlet NSButton* sortInclude;
 @end
 
 @implementation AppDelegate
@@ -19,6 +20,8 @@ NSUserDefaults* defaults = nil;
 
 - (void)applicationWillFinishLaunching:(NSNotification*)notification {
     defaults = [[NSUserDefaults alloc] initWithSuiteName:@"XcodeClangFormat"];
+    
+    self.sortInclude.state = [defaults boolForKey:@"sortIncludes"] ? NSOnState : NSOffState;
 
     NSString* style = [defaults stringForKey:@"style"];
     if (!style) {
@@ -162,6 +165,12 @@ NSUserDefaults* defaults = nil;
         [defaults synchronize];
         return YES;
     }
+}
+
+- (IBAction)sortInclude:(NSButton *)sender {
+    NSControlStateValue state = sender.state;
+    [defaults setBool:state == NSOnState ? YES : NO forKey:@"sortIncludes"];
+    [defaults synchronize];
 }
 
 @end
