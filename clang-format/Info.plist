@@ -30,11 +30,19 @@
 			<array>
 				<dict>
 					<key>XCSourceEditorCommandClassName</key>
-					<string>ClangFormatCommand</string>
+					<string>ClangFormatFileCommand</string>
 					<key>XCSourceEditorCommandIdentifier</key>
-					<string>$(PRODUCT_BUNDLE_IDENTIFIER).ClangFormatCommand</string>
+					<string>$(PRODUCT_BUNDLE_IDENTIFIER).ClangFormatFileCommand</string>
 					<key>XCSourceEditorCommandName</key>
-					<string>Format Source Code</string>
+					<string>Format File</string>
+				</dict>
+				<dict>
+					<key>XCSourceEditorCommandClassName</key>
+					<string>ClangFormatSelectionCommand</string>
+					<key>XCSourceEditorCommandIdentifier</key>
+					<string>$(PRODUCT_BUNDLE_IDENTIFIER).ClangFormatSelectionCommand</string>
+					<key>XCSourceEditorCommandName</key>
+					<string>Format Selection</string>
 				</dict>
 			</array>
 			<key>XCSourceEditorExtensionPrincipalClass</key>

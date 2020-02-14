@@ -1,98 +1,20 @@
-#import "ClangFormatCommand.h"
+#import "ClangFormatSelectionCommand.h"
 
 #import <AppKit/AppKit.h>
-
 #include <clang/Format/Format.h>
+#include "FormatHelper.h"
 
-// Generates a list of offsets for ever line in the array.
-void updateOffsets(std::vector<size_t>& offsets, NSMutableArray<NSString*>* lines) {
-    offsets.clear();
-    offsets.reserve(lines.count + 1);
-    offsets.push_back(0);
-    size_t offset = 0;
-    for (NSString* line in lines) {
-        offsets.push_back(offset += line.length);
-    }
-}
+NSErrorDomain clangSelectionFormatErrorDomain = @"ClangFileFormatError";
 
-NSErrorDomain errorDomain = @"ClangFormatError";
-
-@implementation ClangFormatCommand
-
-NSUserDefaults* defaults = nil;
-
-- (NSData*)getCustomStyle {
-    // First, read the regular bookmark because it could've been changed by the wrapper app.
-    NSData* regularBookmark = [defaults dataForKey:@"regularBookmark"];
-    NSURL* regularURL = nil;
-    BOOL regularStale = NO;
-    if (regularBookmark) {
-        regularURL = [NSURL URLByResolvingBookmarkData:regularBookmark
-                                               options:NSURLBookmarkResolutionWithoutUI
-                                         relativeToURL:nil
-                                   bookmarkDataIsStale:&regularStale
-                                                 error:nil];
-    }
-
-    if (!regularURL) {
-        return nil;
-    }
-
-    // Then read the security URL, which is the URL we're actually going to use to access the file.
-    NSData* securityBookmark = [defaults dataForKey:@"securityBookmark"];
-    NSURL* securityURL = nil;
-    BOOL securityStale = NO;
-    if (securityBookmark) {
-        securityURL = [NSURL URLByResolvingBookmarkData:securityBookmark
-                                                options:NSURLBookmarkResolutionWithSecurityScope |
-                                                        NSURLBookmarkResolutionWithoutUI
-                                          relativeToURL:nil
-                                    bookmarkDataIsStale:&securityStale
-                                                  error:nil];
-    }
-
-    // Clear out the security URL if it's no longer matching the regular URL.
-    if (securityStale == YES ||
-        (securityURL && ![[securityURL path] isEqualToString:[regularURL path]])) {
-        securityURL = nil;
-    }
-
-    if (!securityURL && regularStale == NO) {
-        // Attempt to create new security URL from the regular URL to persist across system reboots.
-        NSError* error = nil;
-        securityBookmark = [regularURL
-                   bookmarkDataWithOptions:NSURLBookmarkCreationWithSecurityScope |
-                                           NSURLBookmarkCreationSecurityScopeAllowOnlyReadAccess
-            includingResourceValuesForKeys:nil
-                             relativeToURL:nil
-                                     error:&error];
-        [defaults setObject:securityBookmark forKey:@"securityBookmark"];
-        securityURL = regularURL;
-    }
-
-    if (securityURL) {
-        // Finally, attempt to read the .clang-format file
-        NSError* error = nil;
-        [securityURL startAccessingSecurityScopedResource];
-        NSData* data = [NSData dataWithContentsOfURL:securityURL options:0 error:&error];
-        [securityURL stopAccessingSecurityScopedResource];
-        if (error) {
-            NSLog(@"Error loading from security bookmark: %@", error);
-        } else if (data) {
-            return data;
-        }
-    }
-
-    return nil;
-}
+@implementation ClangFormatSelectionCommand
 
 - (void)performCommandWithInvocation:(XCSourceEditorCommandInvocation*)invocation
                    completionHandler:(void (^)(NSError* _Nullable nilOrError))completionHandler {
-    if (!defaults) {
-        defaults = [[NSUserDefaults alloc] initWithSuiteName:@"XcodeClangFormat"];
+    if (!self.defaults) {
+        self.defaults = [[NSUserDefaults alloc] initWithSuiteName:@"XcodeClangFormat"];
     }
 
-    NSString* style = [defaults stringForKey:@"style"];
+    NSString* style = [self.defaults stringForKey:@"style"];
     if (!style) {
         style = @"llvm";
     }
@@ -104,7 +26,7 @@ NSUserDefaults* defaults = nil;
         NSData* config = [self getCustomStyle];
         if (!config) {
             completionHandler([NSError
-                errorWithDomain:errorDomain
+                errorWithDomain:clangSelectionFormatErrorDomain
                            code:0
                        userInfo:@{
                            NSLocalizedDescriptionKey :
@@ -117,7 +39,7 @@ NSUserDefaults* defaults = nil;
             auto error = clang::format::parseConfiguration(configString, &format);
             if (error) {
                 completionHandler([NSError
-                    errorWithDomain:errorDomain
+                    errorWithDomain:clangSelectionFormatErrorDomain
                                code:0
                            userInfo:@{
                                NSLocalizedDescriptionKey :
@@ -133,7 +55,7 @@ NSUserDefaults* defaults = nil;
             clang::format::FormatStyle::LanguageKind::LK_Cpp, &format);
         if (!success) {
             completionHandler([NSError
-                errorWithDomain:errorDomain
+                errorWithDomain:clangSelectionFormatErrorDomain
                            code:0
                        userInfo:@{
                            NSLocalizedDescriptionKey : [NSString
@@ -164,7 +86,7 @@ NSUserDefaults* defaults = nil;
     if (!result) {
         // We could not apply the calculated replacements.
         completionHandler([NSError
-            errorWithDomain:errorDomain
+            errorWithDomain:clangSelectionFormatErrorDomain
                        code:0
                    userInfo:@{
                        NSLocalizedDescriptionKey : @"Failed to apply formatting replacements."
