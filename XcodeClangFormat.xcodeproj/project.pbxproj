@@ -51,7 +51,6 @@
 
 /* Begin PBXFileReference section */
 		5322DA8223F6BFEB008C0130 /* lib */ = {isa = PBXFileReference; lastKnownFileType = folder; name = lib; path = "deps/clang-9.0.0/lib"; sourceTree = "<group>"; };
-		53D49D3623F6C17C00B689DC /* HeaderIncludes.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = HeaderIncludes.h; path = "deps/clang-9.0.0/include/clang/Tooling/Inclusions/HeaderIncludes.h"; sourceTree = "<group>"; };
 		53D49D3823F6C4AF00B689DC /* libclangToolingInclusions.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libclangToolingInclusions.a; path = "deps/clang-9.0.0/lib/libclangToolingInclusions.a"; sourceTree = "<group>"; };
 		53D49D3A23F6C52100B689DC /* libRemarks.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libRemarks.dylib; path = "deps/clang-9.0.0/lib/libRemarks.dylib"; sourceTree = "<group>"; };
 		53D49D3C23F6C62700B689DC /* Dwarf.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = Dwarf.h; path = "deps/clang-9.0.0/include/llvm/BinaryFormat/Dwarf.h"; sourceTree = "<group>"; };
@@ -112,7 +111,6 @@
 		559B23D51D7EBDA300937AB3 = {
 			isa = PBXGroup;
 			children = (
-				53D49D3623F6C17C00B689DC /* HeaderIncludes.h */,
 				55BCFFF71D801362000EDB05 /* config.xcconfig */,
 				55C8203F1D87F81300006D07 /* LICENSE.md */,
 				559B23E01D7EBDA300937AB3 /* XcodeClangFormat */,
