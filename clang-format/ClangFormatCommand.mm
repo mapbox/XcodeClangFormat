@@ -187,9 +187,8 @@ NSUserDefaults* defaults = nil;
 
     // Update the selections with the shifted code positions.
     for (auto& range : ranges) {
-        const size_t start = clang::tooling::shiftedCodePosition(replaces, range.getOffset());
-        const size_t end =
-            clang::tooling::shiftedCodePosition(replaces, range.getOffset() + range.getLength());
+        const size_t start = replaces.getShiftedCodePosition(range.getOffset());
+        const size_t end = replaces.getShiftedCodePosition(range.getOffset() + range.getLength());
 
         // In offsets, find the value that is smaller than start.
         auto start_it = std::lower_bound(offsets.begin(), offsets.end(), start);
