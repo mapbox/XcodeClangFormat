@@ -98,7 +98,7 @@ NSUserDefaults* defaults = nil;
     }
 
     clang::format::FormatStyle format = clang::format::getLLVMStyle();
-    format.Language = clang::format::FormatStyle::LK_Cpp;
+    format.Language = clang::format::FormatStyle::LK_ObjC;
     clang::format::getPredefinedStyle("LLVM", format.Language, &format);
     if ([style isEqualToString:@"custom"]) {
         NSData* config = [self getCustomStyle];
@@ -130,7 +130,7 @@ NSUserDefaults* defaults = nil;
     } else {
         auto success = clang::format::getPredefinedStyle(
             llvm::StringRef([style cStringUsingEncoding:NSUTF8StringEncoding]),
-            clang::format::FormatStyle::LanguageKind::LK_Cpp, &format);
+            clang::format::FormatStyle::LanguageKind::LK_ObjC, &format);
         if (!success) {
             completionHandler([NSError
                 errorWithDomain:errorDomain
