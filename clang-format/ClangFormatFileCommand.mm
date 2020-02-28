@@ -9,58 +9,60 @@ NSErrorDomain clangFileFormatErrorDomain = @"ClangFileFormatError";
 @implementation ClangFormatFileCommand
 
 - (void)performCommandWithInvocation:(XCSourceEditorCommandInvocation*)invocation
-                   completionHandler:(void (^)(NSError* _Nullable nilOrError))completionHandler {
-    if (!self.defaults) {
+                   completionHandler:(void (^)(NSError* _Nullable nilOrError))completionHandler
+{
+    if (!self.defaults)
+    {
         self.defaults = [[NSUserDefaults alloc] initWithSuiteName:@"XcodeClangFormat"];
     }
 
     NSString* style = [self.defaults stringForKey:@"style"];
-    if (!style) {
+    if (!style)
+    {
         style = @"llvm";
     }
 
     clang::format::FormatStyle format = clang::format::getLLVMStyle();
     format.Language = clang::format::FormatStyle::LK_Cpp;
     clang::format::getPredefinedStyle("LLVM", format.Language, &format);
-    if ([style isEqualToString:@"custom"]) {
+    if ([style isEqualToString:@"custom"])
+    {
         NSData* config = [self getCustomStyle];
-        if (!config) {
+        if (!config)
+        {
             completionHandler([NSError
                 errorWithDomain:clangFileFormatErrorDomain
                            code:0
-                       userInfo:@{
-                           NSLocalizedDescriptionKey :
-                               @"Could not load custom style. Please open XcodeClangFormat.app"
-                       }]);
-        } else {
+                       userInfo:@{ NSLocalizedDescriptionKey : @"Could not load custom style. Please open XcodeClangFormat.app" }]);
+        }
+        else
+        {
             // parse style
-            llvm::StringRef configString(reinterpret_cast<const char*>(config.bytes),
-                                         config.length);
+            llvm::StringRef configString(reinterpret_cast<const char*>(config.bytes), config.length);
             auto error = clang::format::parseConfiguration(configString, &format);
-            if (error) {
-                completionHandler([NSError
-                    errorWithDomain:clangFileFormatErrorDomain
-                               code:0
-                           userInfo:@{
-                               NSLocalizedDescriptionKey :
-                                   [NSString stringWithFormat:@"Could not parse custom style: %s.",
-                                                              error.message().c_str()]
-                           }]);
+            if (error)
+            {
+                completionHandler([NSError errorWithDomain:clangFileFormatErrorDomain
+                                                      code:0
+                                                  userInfo:@{
+                                                      NSLocalizedDescriptionKey : [NSString
+                                                          stringWithFormat:@"Could not parse custom style: %s.", error.message().c_str()]
+                                                  }]);
                 return;
             }
         }
-    } else {
-        auto success = clang::format::getPredefinedStyle(
-            llvm::StringRef([style cStringUsingEncoding:NSUTF8StringEncoding]),
-            clang::format::FormatStyle::LanguageKind::LK_Cpp, &format);
-        if (!success) {
+    }
+    else
+    {
+        auto success = clang::format::getPredefinedStyle(llvm::StringRef([style cStringUsingEncoding:NSUTF8StringEncoding]),
+                                                         clang::format::FormatStyle::LanguageKind::LK_Cpp,
+                                                         &format);
+        if (!success)
+        {
             completionHandler([NSError
                 errorWithDomain:clangFileFormatErrorDomain
                            code:0
-                       userInfo:@{
-                           NSLocalizedDescriptionKey : [NSString
-                               stringWithFormat:@"Could not parse default style %@", style]
-                       }]);
+                       userInfo:@{ NSLocalizedDescriptionKey : [NSString stringWithFormat:@"Could not parse default style %@", style] }]);
             return;
         }
     }
@@ -72,7 +74,8 @@ NSErrorDomain clangFileFormatErrorDomain = @"ClangFileFormatError";
 
     std::vector<clang::tooling::Range> ranges;
     size_t start = 0;
-    for (NSString* range in invocation.buffer.lines) {
+    for (NSString* range in invocation.buffer.lines)
+    {
         ranges.emplace_back(start, [range length]);
         start += [range length];
     }
@@ -82,14 +85,12 @@ NSErrorDomain clangFileFormatErrorDomain = @"ClangFileFormatError";
     auto replaces = clang::format::reformat(format, code, ranges, filename);
     auto result = clang::tooling::applyAllReplacements(code, replaces);
 
-    if (!result) {
+    if (!result)
+    {
         // We could not apply the calculated replacements.
-        completionHandler([NSError
-            errorWithDomain:clangFileFormatErrorDomain
-                       code:0
-                   userInfo:@{
-                       NSLocalizedDescriptionKey : @"Failed to apply formatting replacements."
-                   }]);
+        completionHandler([NSError errorWithDomain:clangFileFormatErrorDomain
+                                              code:0
+                                          userInfo:@{ NSLocalizedDescriptionKey : @"Failed to apply formatting replacements." }]);
         return;
     }
 
@@ -99,9 +100,7 @@ NSErrorDomain clangFileFormatErrorDomain = @"ClangFileFormatError";
     [invocation.buffer.selections removeAllObjects];
 
     // Update the entire text with the result we got after applying the replacements.
-    invocation.buffer.completeBuffer = [[NSString alloc] initWithBytes:result->data()
-                                                                length:result->size()
-                                                              encoding:NSUTF8StringEncoding];
+    invocation.buffer.completeBuffer = [[NSString alloc] initWithBytes:result->data() length:result->size() encoding:NSUTF8StringEncoding];
     completionHandler(nil);
 }
 
