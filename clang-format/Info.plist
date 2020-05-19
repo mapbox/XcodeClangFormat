@@ -32,9 +32,17 @@
 					<key>XCSourceEditorCommandClassName</key>
 					<string>ClangFormatCommand</string>
 					<key>XCSourceEditorCommandIdentifier</key>
-					<string>$(PRODUCT_BUNDLE_IDENTIFIER).ClangFormatCommand</string>
+					<string>$(PRODUCT_BUNDLE_IDENTIFIER).FormatSelection</string>
 					<key>XCSourceEditorCommandName</key>
-					<string>Format Source Code</string>
+					<string>Format Selection</string>
+				</dict>
+				<dict>
+					<key>XCSourceEditorCommandClassName</key>
+					<string>ClangFormatCommand</string>
+					<key>XCSourceEditorCommandIdentifier</key>
+					<string>$(PRODUCT_BUNDLE_IDENTIFIER).FormatFile</string>
+					<key>XCSourceEditorCommandName</key>
+					<string>Format Entire File</string>
 				</dict>
 			</array>
 			<key>XCSourceEditorExtensionPrincipalClass</key>

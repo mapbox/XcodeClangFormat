@@ -38,6 +38,8 @@ NSErrorDomain errorDomain = @"ClangFormatError";
 @implementation ClangFormatCommand
 
 NSUserDefaults* defaults = nil;
+NSString* kFormatSelectionCommandIdentifier = [NSString stringWithFormat:@"%@.FormatSelection", [[NSBundle mainBundle] bundleIdentifier]];
+NSString* kFormatFileCommandIdentifier = [NSString stringWithFormat:@"%@.FormatFile", [[NSBundle mainBundle] bundleIdentifier]];
 
 - (NSData*)getCustomStyle {
     // First, read the regular bookmark because it could've been changed by the wrapper app.
@@ -170,10 +172,23 @@ NSUserDefaults* defaults = nil;
     updateOffsets(offsets, lines);
 
     std::vector<clang::tooling::Range> ranges;
-    for (XCSourceTextRange* range in invocation.buffer.selections) {
-        const size_t start = offsets[range.start.line] + range.start.column;
-        const size_t end = offsets[range.end.line] + range.end.column;
-        ranges.emplace_back(start, end - start);
+
+    if ([invocation.commandIdentifier isEqualToString:kFormatSelectionCommandIdentifier]) {
+        for (XCSourceTextRange* range in invocation.buffer.selections) {
+            const size_t start = offsets[range.start.line] + range.start.column;
+            const size_t end = offsets[range.end.line] + range.end.column;
+            ranges.emplace_back(start, end - start);
+        }
+    } else if ([invocation.commandIdentifier isEqualToString:kFormatFileCommandIdentifier]) {
+        ranges.emplace_back(0, code.size());
+    } else {
+        completionHandler([NSError
+                           errorWithDomain:errorDomain
+                           code:0
+                           userInfo:@{
+                               NSLocalizedDescriptionKey : @"Unknown command"
+                           }]);
+        return;
     }
 
     // Calculated replacements and apply them to the input buffer.
