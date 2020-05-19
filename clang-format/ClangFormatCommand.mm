@@ -163,10 +163,11 @@ NSUserDefaults* defaults = nil;
     }
 
     NSData* buffer = [invocation.buffer.completeBuffer dataUsingEncoding:NSUTF8StringEncoding];
+    NSMutableArray<NSString*>* lines = invocation.buffer.lines;
     llvm::StringRef code(reinterpret_cast<const char*>(buffer.bytes), buffer.length);
 
     std::vector<size_t> offsets;
-    updateOffsets(offsets, invocation.buffer.lines);
+    updateOffsets(offsets, lines);
 
     std::vector<clang::tooling::Range> ranges;
     for (XCSourceTextRange* range in invocation.buffer.selections) {
@@ -177,37 +178,27 @@ NSUserDefaults* defaults = nil;
 
     // Calculated replacements and apply them to the input buffer.
     const llvm::StringRef filename("<stdin>");
-    auto replaces = clang::format::reformat(format, code, ranges, filename);
-    auto result = clang::tooling::applyAllReplacements(code, replaces);
+    clang::format::FormattingAttemptStatus status;
+    auto replaces = clang::format::reformat(format, code, ranges, filename, &status);
 
-    if (!result) {
+    if (!status.FormatComplete) {
         // We could not apply the calculated replacements.
         completionHandler([NSError
             errorWithDomain:errorDomain
                        code:0
                    userInfo:@{
-                       NSLocalizedDescriptionKey : @"Failed to apply formatting replacements."
+                       NSLocalizedDescriptionKey : [NSString
+                           stringWithFormat:
+                               @"Could not complete formatting due to a syntax error on line %u",
+                               status.Line]
                    }]);
         return;
     }
 
-    // Remove all selections before replacing the completeBuffer, otherwise we get crashes when
-    // changing the buffer contents because it tries to automatically update the selections, which
-    // might be out of range now.
-    [invocation.buffer.selections removeAllObjects];
-
-    // Update the entire text with the result we got after applying the replacements.
-    invocation.buffer.completeBuffer = [[NSString alloc] initWithBytes:result->data()
-                                                                length:result->size()
-                                                              encoding:NSUTF8StringEncoding];
-
-    // Recalculate the line offsets.
-    updateOffsets(offsets, invocation.buffer.lines);
-
-    // Update the selections with the shifted code positions.
-    for (auto& range : ranges) {
-        const size_t start = replaces.getShiftedCodePosition(range.getOffset());
-        const size_t end = replaces.getShiftedCodePosition(range.getOffset() + range.getLength());
+    for (auto it = replaces.rbegin(), rend = replaces.rend(); it != rend; ++it) {
+        const size_t start = it->getOffset();
+        const size_t end = start + it->getLength();
+        const auto replacement = it->getReplacementText();
 
         // In offsets, find the value that is smaller than start.
         auto start_it = std::lower_bound(offsets.begin(), offsets.end(), start);
@@ -230,17 +221,28 @@ NSUserDefaults* defaults = nil;
         const size_t end_line = std::distance(offsets.begin(), end_it);
         const int64_t end_column = int64_t(end) - int64_t(*end_it);
 
-        [invocation.buffer.selections
-            addObject:[[XCSourceTextRange alloc]
-                          initWithStart:XCSourceTextPositionMake(start_line, start_column)
-                                    end:XCSourceTextPositionMake(end_line, end_column)]];
-    }
+        NSString* before = [[lines objectAtIndex:start_line] substringToIndex:start_column];
+        NSString* changed = [[NSString alloc] initWithBytes:replacement.data()
+                                                     length:replacement.size()
+                                                   encoding:NSUTF8StringEncoding];
+        NSString* after = end_line >= lines.count
+                              ? @""
+                              : [[lines objectAtIndex:end_line] substringFromIndex:end_column];
+        NSString* string = [@[ before, changed, after ] componentsJoinedByString:@""];
+        NSMutableArray* replacements = [[NSMutableArray alloc] init];
+        [string
+            enumerateSubstringsInRange:NSMakeRange(0, string.length)
+                               options:NSStringEnumerationByLines
+                            usingBlock:^(NSString* _Nullable,
+                                         NSRange,
+                                         NSRange enclosingRange,
+                                         BOOL* _Nonnull) {
+                              [replacements addObject:[string substringWithRange:enclosingRange]];
+                            }];
 
-    // If we could not recover the selection, place the cursor at the beginning of the file.
-    if (!invocation.buffer.selections.count) {
-        [invocation.buffer.selections
-            addObject:[[XCSourceTextRange alloc] initWithStart:XCSourceTextPositionMake(0, 0)
-                                                           end:XCSourceTextPositionMake(0, 0)]];
+        NSRange range =
+            NSMakeRange(start_line, end_line - start_line + (end_line < lines.count ? 1 : 0));
+        [lines replaceObjectsInRange:range withObjectsFromArray:replacements];
     }
 
     completionHandler(nil);
