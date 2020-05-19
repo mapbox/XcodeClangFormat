@@ -43,6 +43,7 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		552396A22473BCCB002F4098 /* ClangFormat.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ClangFormat.h; sourceTree = "<group>"; };
 		556DCDEF1D7EF694005956C8 /* XcodeClangFormat.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = XcodeClangFormat.entitlements; sourceTree = "<group>"; };
 		557D38B71D7F270E00708269 /* libcurses.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = libcurses.tbd; path = usr/lib/libcurses.tbd; sourceTree = SDKROOT; };
 		559B23DE1D7EBDA300937AB3 /* XcodeClangFormat.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = XcodeClangFormat.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -139,10 +140,11 @@
 		559B24111D7EBDC400937AB3 /* clang-format */ = {
 			isa = PBXGroup;
 			children = (
+				552396A22473BCCB002F4098 /* ClangFormat.h */,
 				559B24141D7EBDC400937AB3 /* ClangFormatExtension.h */,
+				559B24181D7EBDC400937AB3 /* ClangFormatCommand.mm */,
 				559B24151D7EBDC400937AB3 /* ClangFormatExtension.m */,
 				559B24171D7EBDC400937AB3 /* ClangFormatCommand.h */,
-				559B24181D7EBDC400937AB3 /* ClangFormatCommand.mm */,
 				559B241A1D7EBDC400937AB3 /* Info.plist */,
 				559B24121D7EBDC400937AB3 /* Supporting Files */,
 			);
@@ -467,17 +469,23 @@
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks @executable_path/../../../../Frameworks";
 				MACOSX_DEPLOYMENT_TARGET = 10.11;
 				OTHER_CPLUSPLUSFLAGS = (
+					"--system-header-prefix=$(LLVM_INCLUDE_DIR)",
 					"$(LLVM_CXXFLAGS)",
 					"$(OTHER_CFLAGS)",
 				);
 				OTHER_LDFLAGS = (
 					"$(LLVM_LIBDIR)/libclangFormat.a",
 					"$(LLVM_LIBDIR)/libclangToolingCore.a",
+					"$(LLVM_LIBDIR)/libclangToolingInclusions.a",
 					"$(LLVM_LIBDIR)/libclangLex.a",
 					"$(LLVM_LIBDIR)/libclangBasic.a",
 					"$(LLVM_LIBDIR)/libclangRewrite.a",
 					"$(LLVM_LIBDIR)/libLLVMCore.a",
+					"$(LLVM_LIBDIR)/libLLVMBinaryFormat.a",
 					"$(LLVM_LIBDIR)/libLLVMSupport.a",
+					"$(LLVM_LIBDIR)/libLLVMDemangle.a",
+					"$(LLVM_LIBDIR)/libLLVMRemarks.a",
+					"$(LLVM_LIBDIR)/libLLVMBitstreamReader.a",
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = "com.mapbox.XcodeClangFormat.clang-format";
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -505,17 +513,23 @@
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks @executable_path/../../../../Frameworks";
 				MACOSX_DEPLOYMENT_TARGET = 10.11;
 				OTHER_CPLUSPLUSFLAGS = (
+					"--system-header-prefix=$(LLVM_INCLUDE_DIR)",
 					"$(LLVM_CXXFLAGS)",
 					"$(OTHER_CFLAGS)",
 				);
 				OTHER_LDFLAGS = (
 					"$(LLVM_LIBDIR)/libclangFormat.a",
 					"$(LLVM_LIBDIR)/libclangToolingCore.a",
+					"$(LLVM_LIBDIR)/libclangToolingInclusions.a",
 					"$(LLVM_LIBDIR)/libclangLex.a",
 					"$(LLVM_LIBDIR)/libclangBasic.a",
 					"$(LLVM_LIBDIR)/libclangRewrite.a",
 					"$(LLVM_LIBDIR)/libLLVMCore.a",
+					"$(LLVM_LIBDIR)/libLLVMBinaryFormat.a",
 					"$(LLVM_LIBDIR)/libLLVMSupport.a",
+					"$(LLVM_LIBDIR)/libLLVMDemangle.a",
+					"$(LLVM_LIBDIR)/libLLVMRemarks.a",
+					"$(LLVM_LIBDIR)/libLLVMBitstreamReader.a",
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = "com.mapbox.XcodeClangFormat.clang-format";
 				PRODUCT_NAME = "$(TARGET_NAME)";

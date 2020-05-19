@@ -36,6 +36,7 @@ esac
 
 echo "// Do not modify this file. Instead, rerun ./configure" > config.xcconfig
 echo "LLVM_LIBDIR=$(${LLVM_CONFIG} --libdir)" >> config.xcconfig
+echo "LLVM_INCLUDE_DIR=$(${LLVM_CONFIG} --includedir)" >> config.xcconfig
 echo "LLVM_CXXFLAGS=$(${LLVM_CONFIG} --cxxflags)" >> config.xcconfig
 
 echo "Wrote config.xcconfig."
