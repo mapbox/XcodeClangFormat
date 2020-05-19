@@ -15,6 +15,24 @@ void updateOffsets(std::vector<size_t>& offsets, NSMutableArray<NSString*>* line
     }
 }
 
+clang::format::FormatStyle::LanguageKind getLanguageFromUTI(NSString* uti) {
+    if (UTTypeEqual((__bridge CFStringRef)uti, kUTTypeCPlusPlusHeader) ||
+        UTTypeEqual((__bridge CFStringRef)uti, kUTTypeCPlusPlusSource) ||
+        UTTypeEqual((__bridge CFStringRef)uti, kUTTypeCHeader) ||
+        UTTypeEqual((__bridge CFStringRef)uti, kUTTypeCSource)) {
+        return clang::format::FormatStyle::LK_Cpp;
+    } else if (UTTypeEqual((__bridge CFStringRef)uti, kUTTypeObjectiveCSource) ||
+               UTTypeEqual((__bridge CFStringRef)uti, kUTTypeObjectiveCSource)) {
+        return clang::format::FormatStyle::LK_ObjC;
+    } else if (UTTypeEqual((__bridge CFStringRef)uti, kUTTypeJavaSource)) {
+        return clang::format::FormatStyle::LK_Java;
+    } else if (UTTypeEqual((__bridge CFStringRef)uti, kUTTypeJavaScript)) {
+        return clang::format::FormatStyle::LK_JavaScript;
+    }
+
+    return clang::format::FormatStyle::LK_None;
+}
+
 NSErrorDomain errorDomain = @"ClangFormatError";
 
 @implementation ClangFormatCommand
@@ -92,13 +110,15 @@ NSUserDefaults* defaults = nil;
         defaults = [[NSUserDefaults alloc] initWithSuiteName:@"XcodeClangFormat"];
     }
 
+    const auto language = getLanguageFromUTI(invocation.buffer.contentUTI);
+
     NSString* style = [defaults stringForKey:@"style"];
     if (!style) {
         style = @"llvm";
     }
 
     clang::format::FormatStyle format = clang::format::getLLVMStyle();
-    format.Language = clang::format::FormatStyle::LK_Cpp;
+    format.Language = language;
     clang::format::getPredefinedStyle("LLVM", format.Language, &format);
     if ([style isEqualToString:@"custom"]) {
         NSData* config = [self getCustomStyle];
@@ -129,8 +149,7 @@ NSUserDefaults* defaults = nil;
         }
     } else {
         auto success = clang::format::getPredefinedStyle(
-            llvm::StringRef([style cStringUsingEncoding:NSUTF8StringEncoding]),
-            clang::format::FormatStyle::LanguageKind::LK_Cpp, &format);
+            llvm::StringRef([style cStringUsingEncoding:NSUTF8StringEncoding]), language, &format);
         if (!success) {
             completionHandler([NSError
                 errorWithDomain:errorDomain
