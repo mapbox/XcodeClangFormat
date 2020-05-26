@@ -2,7 +2,7 @@
 
 ### [⚙ Download Latest Release](https://github.com/mapbox/XcodeClangFormat/releases/latest)
 
-...or install with Homebrew: `brew cask install xcode-clang-format`
+...or install with Homebrew: `brew cask install xcodeclangformat`
 
 This plugin is written for Xcode 8's new plugin infrastructure and compatible through at least Xcode 11.4 It uses Clang's `libclangFormat` library to format code according to a `.clang-format` file.
 
