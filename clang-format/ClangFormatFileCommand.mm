@@ -82,10 +82,11 @@ NSErrorDomain clangFileFormatErrorDomain = @"ClangFileFormatError";
 
     // Calculated replacements and apply them to the input buffer.
     const llvm::StringRef filename("<stdin>");
-    auto replaces = clang::format::reformat(format, code, ranges, filename);
+    clang::format::FormattingAttemptStatus status;
+    auto replaces = clang::format::reformat(format, code, ranges, filename, &status);
     auto result = clang::tooling::applyAllReplacements(code, replaces);
-
-    if (!result)
+            
+    if (!status.FormatComplete)
     {
         // We could not apply the calculated replacements.
         completionHandler([NSError errorWithDomain:clangFileFormatErrorDomain
@@ -93,14 +94,26 @@ NSErrorDomain clangFileFormatErrorDomain = @"ClangFileFormatError";
                                           userInfo:@{ NSLocalizedDescriptionKey : @"Failed to apply formatting replacements." }]);
         return;
     }
-
+    
+    auto includeReplaces = clang::format::sortIncludes(format, result->data(), ranges, filename);
+    auto includeReplaceResult = clang::tooling::applyAllReplacements(result->data(), includeReplaces);
+    if (!includeReplaceResult)
+    {
+       // We could not apply the calculated replacements.
+       completionHandler([NSError errorWithDomain:clangFileFormatErrorDomain
+                                             code:0
+                                         userInfo:@{ NSLocalizedDescriptionKey : @"Failed to apply formatting replacements to includes." }]);
+       return;
+    }
+    
     // Remove all selections before replacing the completeBuffer, otherwise we get crashes when
     // changing the buffer contents because it tries to automatically update the selections, which
     // might be out of range now.
     [invocation.buffer.selections removeAllObjects];
 
     // Update the entire text with the result we got after applying the replacements.
-    invocation.buffer.completeBuffer = [[NSString alloc] initWithBytes:result->data() length:result->size() encoding:NSUTF8StringEncoding];
+    invocation.buffer.completeBuffer = [[NSString alloc] initWithBytes:includeReplaceResult->data() length:includeReplaceResult->size() encoding:NSUTF8StringEncoding];
+
     completionHandler(nil);
 }
 

@@ -94,14 +94,25 @@ NSErrorDomain clangSelectionFormatErrorDomain = @"ClangFileFormatError";
         return;
     }
 
+    auto includeReplaces = clang::format::sortIncludes(format, result->data(), ranges, filename);
+    auto includeReplaceResult = clang::tooling::applyAllReplacements(result->data(), includeReplaces);
+    if (!includeReplaceResult)
+    {
+       // We could not apply the calculated replacements.
+       completionHandler([NSError errorWithDomain:clangSelectionFormatErrorDomain
+                                             code:0
+                                         userInfo:@{ NSLocalizedDescriptionKey : @"Failed to apply formatting replacements to includes." }]);
+       return;
+    }
+    
     // Remove all selections before replacing the completeBuffer, otherwise we get crashes when
     // changing the buffer contents because it tries to automatically update the selections, which
     // might be out of range now.
     [invocation.buffer.selections removeAllObjects];
 
     // Update the entire text with the result we got after applying the replacements.
-    invocation.buffer.completeBuffer = [[NSString alloc] initWithBytes:result->data()
-                                                                length:result->size()
+    invocation.buffer.completeBuffer = [[NSString alloc] initWithBytes:includeReplaceResult->data()
+                                                                length:includeReplaceResult->size()
                                                               encoding:NSUTF8StringEncoding];
 
     // Recalculate the line offsets.
@@ -138,7 +149,7 @@ NSErrorDomain clangSelectionFormatErrorDomain = @"ClangFileFormatError";
                           initWithStart:XCSourceTextPositionMake(start_line, start_column)
                                     end:XCSourceTextPositionMake(end_line, end_column)]];
     }
-
+    
     // If we could not recover the selection, place the cursor at the beginning of the file.
     if (!invocation.buffer.selections.count) {
         [invocation.buffer.selections
