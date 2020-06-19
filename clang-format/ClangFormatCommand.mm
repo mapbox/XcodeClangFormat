@@ -119,9 +119,7 @@ NSString* kFormatFileCommandIdentifier = [NSString stringWithFormat:@"%@.FormatF
         style = @"llvm";
     }
 
-    clang::format::FormatStyle format = clang::format::getLLVMStyle();
-    format.Language = language;
-    clang::format::getPredefinedStyle("LLVM", format.Language, &format);
+    clang::format::FormatStyle format = clang::format::getNoStyle();
     if ([style isEqualToString:@"custom"]) {
         NSData* config = [self getCustomStyle];
         if (!config) {
@@ -194,7 +192,7 @@ NSString* kFormatFileCommandIdentifier = [NSString stringWithFormat:@"%@.FormatF
     // Calculated replacements and apply them to the input buffer.
     const llvm::StringRef filename("<stdin>");
     clang::format::FormattingAttemptStatus status;
-    auto replaces = clang::format::reformat(format, code, ranges, filename, &status);
+    auto replaces = clang::format::reformat(format.GetLanguageStyle(language).getValueOr(format), code, ranges, filename, &status);
 
     if (!status.FormatComplete) {
         // We could not apply the calculated replacements.
