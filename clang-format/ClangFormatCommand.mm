@@ -7,12 +7,13 @@
 // Generates a list of offsets for ever line in the array.
 void updateOffsets(std::vector<size_t>& offsets, NSMutableArray<NSString*>* lines) {
     offsets.clear();
-    offsets.reserve(lines.count + 1);
+    offsets.reserve(lines.count + 2);
     offsets.push_back(0);
     size_t offset = 0;
     for (NSString* line in lines) {
-        offsets.push_back(offset += line.length);
+        offsets.push_back(offset += [line lengthOfBytesUsingEncoding:NSUTF8StringEncoding]);
     }
+    offsets.push_back(offset);
 }
 
 clang::format::FormatStyle::LanguageKind getLanguageKind(XCSourceTextBuffer* buffer) {
@@ -227,6 +228,9 @@ NSString* kFormatFileCommandIdentifier = [NSString stringWithFormat:@"%@.FormatF
             continue;
         }
 
+        // We're adding a final offset index that is the position beyond the last byte.
+        assert(end_it + 1 != offsets.end());
+
         // We need to go one line back unless we're at the beginning of the line.
         if (*start_it > start) {
             --start_it;
@@ -237,18 +241,18 @@ NSString* kFormatFileCommandIdentifier = [NSString stringWithFormat:@"%@.FormatF
 
         const size_t start_line = std::distance(offsets.begin(), start_it);
         const int64_t start_column = int64_t(start) - int64_t(*start_it);
+        assert(start_column >= 0);
 
         const size_t end_line = std::distance(offsets.begin(), end_it);
         const int64_t end_column = int64_t(end) - int64_t(*end_it);
+        assert(end_column >= 0);
+        NSData* before_line = [[lines objectAtIndex:start_line] dataUsingEncoding:NSUTF8StringEncoding];
+        NSData* after_line = [[lines objectAtIndex:end_line] dataUsingEncoding:NSUTF8StringEncoding];
+        NSMutableData* replacement_data = [[NSMutableData alloc] initWithBytes:before_line.bytes length:start_column];
+        [replacement_data appendBytes:replacement.data() length:replacement.size()];
+        [replacement_data appendBytes:(reinterpret_cast<const char*>(after_line.bytes) + end_column) length: (after_line.length - end_column)];
 
-        NSString* before = [[lines objectAtIndex:start_line] substringToIndex:start_column];
-        NSString* changed = [[NSString alloc] initWithBytes:replacement.data()
-                                                     length:replacement.size()
-                                                   encoding:NSUTF8StringEncoding];
-        NSString* after = end_line >= lines.count
-                              ? @""
-                              : [[lines objectAtIndex:end_line] substringFromIndex:end_column];
-        NSString* string = [@[ before, changed, after ] componentsJoinedByString:@""];
+        NSString* string = [[NSString alloc] initWithData:replacement_data encoding:NSUTF8StringEncoding];
         NSMutableArray* replacements = [[NSMutableArray alloc] init];
         [string
             enumerateSubstringsInRange:NSMakeRange(0, string.length)
