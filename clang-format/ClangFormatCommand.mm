@@ -15,18 +15,25 @@ void updateOffsets(std::vector<size_t>& offsets, NSMutableArray<NSString*>* line
     }
 }
 
-clang::format::FormatStyle::LanguageKind getLanguageFromUTI(NSString* uti) {
-    if (UTTypeEqual((__bridge CFStringRef)uti, kUTTypeCPlusPlusHeader) ||
-        UTTypeEqual((__bridge CFStringRef)uti, kUTTypeCPlusPlusSource) ||
-        UTTypeEqual((__bridge CFStringRef)uti, kUTTypeCHeader) ||
-        UTTypeEqual((__bridge CFStringRef)uti, kUTTypeCSource)) {
+clang::format::FormatStyle::LanguageKind getLanguageKind(XCSourceTextBuffer* buffer) {
+    CFStringRef uti = (__bridge CFStringRef)buffer.contentUTI;
+    if (UTTypeEqual(uti, kUTTypeCHeader)) {
+        // C header files could also be Objective-C. We attempt to detect typical Objective-C keywords.
+        for (NSString* line in buffer.lines) {
+            if ([line hasPrefix:@"#import"] || [line hasPrefix:@"@interface"] || [line hasPrefix:@"@protocol"] ||
+                [line hasPrefix:@"@property"] || [line hasPrefix:@"@end"]) {
+                return clang::format::FormatStyle::LK_ObjC;
+            }
+        }
+    } else if (UTTypeEqual(uti, kUTTypeCPlusPlusHeader) || UTTypeEqual(uti, kUTTypeCPlusPlusSource) ||
+               UTTypeEqual(uti, kUTTypeCHeader) || UTTypeEqual(uti, kUTTypeCSource)) {
         return clang::format::FormatStyle::LK_Cpp;
-    } else if (UTTypeEqual((__bridge CFStringRef)uti, kUTTypeObjectiveCSource) ||
-               UTTypeEqual((__bridge CFStringRef)uti, kUTTypeObjectiveCSource)) {
+    } else if (UTTypeEqual(uti, kUTTypeObjectiveCSource) ||
+               UTTypeEqual(uti, kUTTypeObjectiveCSource)) {
         return clang::format::FormatStyle::LK_ObjC;
-    } else if (UTTypeEqual((__bridge CFStringRef)uti, kUTTypeJavaSource)) {
+    } else if (UTTypeEqual(uti, kUTTypeJavaSource)) {
         return clang::format::FormatStyle::LK_Java;
-    } else if (UTTypeEqual((__bridge CFStringRef)uti, kUTTypeJavaScript)) {
+    } else if (UTTypeEqual(uti, kUTTypeJavaScript)) {
         return clang::format::FormatStyle::LK_JavaScript;
     }
 
@@ -112,7 +119,7 @@ NSString* kFormatFileCommandIdentifier = [NSString stringWithFormat:@"%@.FormatF
         defaults = [[NSUserDefaults alloc] initWithSuiteName:@"XcodeClangFormat"];
     }
 
-    const auto language = getLanguageFromUTI(invocation.buffer.contentUTI);
+    const auto language = getLanguageKind(invocation.buffer);
 
     NSString* style = [defaults stringForKey:@"style"];
     if (!style) {
