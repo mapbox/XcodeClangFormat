@@ -30,7 +30,7 @@ clang::format::FormatStyle::LanguageKind getLanguageKind(XCSourceTextBuffer* buf
                UTTypeEqual(uti, kUTTypeCHeader) || UTTypeEqual(uti, kUTTypeCSource)) {
         return clang::format::FormatStyle::LK_Cpp;
     } else if (UTTypeEqual(uti, kUTTypeObjectiveCSource) ||
-               UTTypeEqual(uti, kUTTypeObjectiveCSource)) {
+               UTTypeEqual(uti, kUTTypeObjectiveCPlusPlusSource)) {
         return clang::format::FormatStyle::LK_ObjC;
     } else if (UTTypeEqual(uti, kUTTypeJavaSource)) {
         return clang::format::FormatStyle::LK_Java;
