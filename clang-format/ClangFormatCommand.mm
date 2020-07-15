@@ -142,6 +142,7 @@ NSString* kFormatFileCommandIdentifier = [NSString stringWithFormat:@"%@.FormatF
             // parse style
             llvm::StringRef configString(reinterpret_cast<const char*>(config.bytes),
                                          config.length);
+            clang::format::getPredefinedStyle("LLVM", language, &format);
             auto error = clang::format::parseConfiguration(configString, &format);
             if (error) {
                 completionHandler([NSError
