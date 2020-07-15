@@ -53,5 +53,7 @@ The Xcode extension mechanism doesn't allow that; the only thing you can do is r
 ##### Why doesn't the menu item show up?
 If you're using macOS Sierra, please follow the [installing](#installing) guide. on OS X 10.11, I haven't found a way to make this extension work besides [manually building it](#building).
 
+If the menu items randomly disappears, quit Xcode. In Finder, [rename `Xcode.app` to something else, then rename it back to `Xcode.app`](https://stackoverflow.com/a/48893833). 🤯
+
 ##### When compiling, I'm getting `'clang/Format/Format.h' file not found`.
 Make sure that you're running `./configure` in the root folder. This downloads and unpacks the precompiled libraries and headers from the llvm.org that are required for compiling.
