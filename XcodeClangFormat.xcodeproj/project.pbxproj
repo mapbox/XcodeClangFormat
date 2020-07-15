@@ -428,7 +428,7 @@
 				ENABLE_HARDENED_RUNTIME = YES;
 				INFOPLIST_FILE = XcodeClangFormat/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks";
-				MARKETING_VERSION = 1.2;
+				MARKETING_VERSION = 1.2.1;
 				PRODUCT_BUNDLE_IDENTIFIER = com.mapbox.XcodeClangFormat;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 			};
@@ -446,7 +446,7 @@
 				ENABLE_HARDENED_RUNTIME = YES;
 				INFOPLIST_FILE = XcodeClangFormat/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks";
-				MARKETING_VERSION = 1.2;
+				MARKETING_VERSION = 1.2.1;
 				PRODUCT_BUNDLE_IDENTIFIER = com.mapbox.XcodeClangFormat;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 			};
@@ -470,7 +470,7 @@
 				INFOPLIST_FILE = "clang-format/Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks @executable_path/../../../../Frameworks";
 				MACOSX_DEPLOYMENT_TARGET = 10.11;
-				MARKETING_VERSION = 1.2;
+				MARKETING_VERSION = 1.2.1;
 				OTHER_CPLUSPLUSFLAGS = (
 					"--system-header-prefix=$(LLVM_INCLUDE_DIR)",
 					"$(LLVM_CXXFLAGS)",
@@ -515,7 +515,7 @@
 				INFOPLIST_FILE = "clang-format/Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks @executable_path/../../../../Frameworks";
 				MACOSX_DEPLOYMENT_TARGET = 10.11;
-				MARKETING_VERSION = 1.2;
+				MARKETING_VERSION = 1.2.1;
 				OTHER_CPLUSPLUSFLAGS = (
 					"--system-header-prefix=$(LLVM_INCLUDE_DIR)",
 					"$(LLVM_CXXFLAGS)",
