@@ -26,7 +26,8 @@ clang::format::FormatStyle::LanguageKind getLanguageKind(XCSourceTextBuffer* buf
                 return clang::format::FormatStyle::LK_ObjC;
             }
         }
-    } else if (UTTypeEqual(uti, kUTTypeCPlusPlusHeader) || UTTypeEqual(uti, kUTTypeCPlusPlusSource) ||
+    }
+    if (UTTypeEqual(uti, kUTTypeCPlusPlusHeader) || UTTypeEqual(uti, kUTTypeCPlusPlusSource) ||
                UTTypeEqual(uti, kUTTypeCHeader) || UTTypeEqual(uti, kUTTypeCSource)) {
         return clang::format::FormatStyle::LK_Cpp;
     } else if (UTTypeEqual(uti, kUTTypeObjectiveCSource) ||
