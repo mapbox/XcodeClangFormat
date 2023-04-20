@@ -1,6 +1,7 @@
 #import "ClangFormatCommand.h"
 
 #import <AppKit/AppKit.h>
+#import <UniformTypeIdentifiers/UniformTypeIdentifiers.h>
 
 #include "ClangFormat.h"
 
@@ -17,8 +18,8 @@ void updateOffsets(std::vector<size_t>& offsets, NSMutableArray<NSString*>* line
 }
 
 clang::format::FormatStyle::LanguageKind getLanguageKind(XCSourceTextBuffer* buffer) {
-    CFStringRef uti = (__bridge CFStringRef)buffer.contentUTI;
-    if (UTTypeEqual(uti, kUTTypeCHeader)) {
+    NSString *uti = buffer.contentUTI;
+    if ([UTTypeCHeader.identifier isEqualToString:uti]) {
         // C header files could also be Objective-C. We attempt to detect typical Objective-C keywords.
         for (NSString* line in buffer.lines) {
             if ([line hasPrefix:@"#import"] || [line hasPrefix:@"@interface"] || [line hasPrefix:@"@protocol"] ||
@@ -27,15 +28,15 @@ clang::format::FormatStyle::LanguageKind getLanguageKind(XCSourceTextBuffer* buf
             }
         }
     }
-    if (UTTypeEqual(uti, kUTTypeCPlusPlusHeader) || UTTypeEqual(uti, kUTTypeCPlusPlusSource) ||
-               UTTypeEqual(uti, kUTTypeCHeader) || UTTypeEqual(uti, kUTTypeCSource)) {
+    if ([UTTypeCPlusPlusHeader.identifier isEqualToString:uti] ||
+        [UTTypeCPlusPlusSource.identifier isEqualToString:uti] ||
+        [UTTypeCHeader.identifier isEqualToString:uti] ||
+        [UTTypeCSource.identifier isEqualToString:uti]) {
         return clang::format::FormatStyle::LK_Cpp;
-    } else if (UTTypeEqual(uti, kUTTypeObjectiveCSource) ||
-               UTTypeEqual(uti, kUTTypeObjectiveCPlusPlusSource)) {
+    } else if ([UTTypeObjectiveCSource.identifier isEqualToString:uti] ||
+               [UTTypeObjectiveCPlusPlusSource.identifier isEqualToString:uti]) {
         return clang::format::FormatStyle::LK_ObjC;
-    } else if (UTTypeEqual(uti, kUTTypeJavaSource)) {
-        return clang::format::FormatStyle::LK_Java;
-    } else if (UTTypeEqual(uti, kUTTypeJavaScript)) {
+    } else if ([UTTypeJavaScript.identifier isEqualToString:uti]) {
         return clang::format::FormatStyle::LK_JavaScript;
     }
 
@@ -202,7 +203,7 @@ NSString* kFormatFileCommandIdentifier = [NSString stringWithFormat:@"%@.FormatF
     // Calculated replacements and apply them to the input buffer.
     const llvm::StringRef filename("<stdin>");
     clang::format::FormattingAttemptStatus status;
-    auto replaces = clang::format::reformat(format.GetLanguageStyle(language).getValueOr(format), code, ranges, filename, &status);
+    auto replaces = clang::format::reformat(*format.GetLanguageStyle(language), code, ranges, filename, &status);
 
     if (!status.FormatComplete) {
         // We could not apply the calculated replacements.

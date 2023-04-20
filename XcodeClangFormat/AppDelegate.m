@@ -26,17 +26,17 @@ NSUserDefaults* defaults = nil;
     }
 
     if ([style isEqualToString:@"custom"]) {
-        self.customStyle.state = NSOnState;
+        self.customStyle.state = NSControlStateValueOn;
     } else if ([style isEqualToString:@"google"]) {
-        self.googleStyle.state = NSOnState;
+        self.googleStyle.state = NSControlStateValueOn;
     } else if ([style isEqualToString:@"chromium"]) {
-        self.chromiumStyle.state = NSOnState;
+        self.chromiumStyle.state = NSControlStateValueOn;
     } else if ([style isEqualToString:@"mozilla"]) {
-        self.mozillaStyle.state = NSOnState;
+        self.mozillaStyle.state = NSControlStateValueOn;
     } else if ([style isEqualToString:@"webkit"]) {
-        self.webkitStyle.state = NSOnState;
+        self.webkitStyle.state = NSControlStateValueOn;
     } else {
-        self.llvmStyle.state = NSOnState;
+        self.llvmStyle.state = NSControlStateValueOn;
     }
 
     NSData* bookmark = [defaults dataForKey:@"file"];
@@ -65,7 +65,7 @@ NSUserDefaults* defaults = nil;
             self.secondaryPathControl.URL = url;
         } else {
             // Remove the bookmark value from the storage
-            [defaults setNilValueForKey:@"regularBookmark"];
+            [defaults removeObjectForKey:@"regularBookmark"];
         }
         [defaults synchronize];
     }
@@ -149,7 +149,7 @@ NSUserDefaults* defaults = nil;
     } else {
         self.primaryPathControl.URL = url;
         self.secondaryPathControl.URL = url;
-        self.customStyle.state = NSOnState;
+        self.customStyle.state = NSControlStateValueOn;
 
         [defaults setValue:@"custom" forKey:@"style"];
         [defaults setObject:bookmark forKey:@"file"];
